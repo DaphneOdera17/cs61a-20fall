@@ -36,3 +36,4 @@ def smallest_prime_factor(n):
     while n % k != 0:
         k += 1
     return k
+
