@@ -23,6 +23,14 @@ def num_eights(x):
     True
     """
     "*** YOUR CODE HERE ***"
+    if x == 0:
+        return 0
+    if x:
+        if x % 10 == 8:
+            return num_eights(x // 10) + 1
+        else:
+            return num_eights(x // 10)
+
 
 
 def pingpong(n):
@@ -58,7 +66,15 @@ def pingpong(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    def helper(i, result, flag):
+        if i == n:
+            return result
+        if num_eights(i) or i % 8 == 0:
+            return helper(i + 1, result - flag, -flag)
+        else:
+            return helper(i + 1, result + flag, flag)
 
+    return helper(1, 1, 1)
 
 def missing_digits(n):
     """Given a number a that is in sorted, increasing order,
@@ -88,6 +104,10 @@ def missing_digits(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n // 10 == 0:
+        return 0
+    cnt = max(n % 10 - (n // 10) % 10 - 1, 0)
+    return missing_digits(n // 10) + cnt
 
 
 def next_largest_coin(coin):
@@ -124,6 +144,17 @@ def count_coins(total):
     True
     """
     "*** YOUR CODE HERE ***"
+    def helper(lowest, n):
+        if lowest == None:
+            return 0
+        elif lowest == n:
+            return 1
+        elif lowest > n:
+            return 0
+        with_coin = helper(lowest, n - lowest)
+        without_coin = helper(next_largest_coin(lowest), n)
+        return with_coin + without_coin
+    return helper(1, total)
 
 
 from operator import sub, mul
