@@ -19,6 +19,10 @@ def skip_add(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n <= 0:
+        return 0
+    else:
+        return n + skip_add(n - 2)
 
 
 def summation(n, term):
@@ -41,7 +45,10 @@ def summation(n, term):
     """
     assert n >= 1
     "*** YOUR CODE HERE ***"
-
+    if n == 1:
+        return term(1)
+    else:
+        return term(n) + summation(n - 1, term)
 
 def paths(m, n):
     """Return the number of paths from one corner of an
@@ -57,7 +64,11 @@ def paths(m, n):
     1
     """
     "*** YOUR CODE HERE ***"
-
+    if m <= 0 or n <= 0:
+        return 0
+    if m == 1 and n == 1:
+        return 1
+    return paths(m - 1, n) + paths(m, n - 1)
 
 
 def max_subseq(n, t):
@@ -105,7 +116,17 @@ def max_subseq(n, t):
     5
     """
     "*** YOUR CODE HERE ***"
-
+    s = str(n)
+    if t == 0:
+        return 0
+    if t == 1:
+        return int(max(s))
+    if t >= len(s):
+        return n
+    # 包含 s[0] 的和 不包含 s[0] 的
+    return max(max_subseq(int(s[1:]), t),
+                int(s[0] + str(max_subseq(s[1:], t - 1)))
+               )
 
 def add_chars(w1, w2):
     """
@@ -134,4 +155,11 @@ def add_chars(w1, w2):
     True
     """
     "*** YOUR CODE HERE ***"
+    if len(w2) == 0:
+        return ""
+    if w1[:1] == w2[:1]:
+        return add_chars(w1[1:], w2[1:])
+    return w2[:1] + add_chars(w1, w2[1:])
+    # Python 能够容忍切片的越界索引，而不能容忍列表/字符串本身的越界索引
+
 
