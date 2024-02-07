@@ -20,6 +20,19 @@ def make_bank(balance):
     """
     def bank(message, amount):
         "*** YOUR CODE HERE ***"
+        nonlocal balance
+        if message == 'withdraw':
+            if amount > balance:
+                return 'Insufficient funds'
+            else:
+                balance -= amount
+                print(balance)
+        elif message == 'deposit':
+            balance += amount
+            print(balance)
+        else:
+            return 'Invalid message'
+
     return bank
 
 
@@ -52,7 +65,27 @@ def make_withdraw(balance, password):
     True
     """
     "*** YOUR CODE HERE ***"
+    cnt = 0
+    lis = []
+    def helper(amount, pwd):
+        nonlocal cnt
+        nonlocal lis
+        nonlocal balance
+        if cnt == 3:
+            s = f"Frozen account. Attempts: ['{lis[0]}', '{lis[1]}', '{lis[2]}']"
+            return s
+        if pwd != password:
+            cnt += 1
+            lis.append(pwd)
+            return 'Incorrect password'
+        else:
+            if amount > balance:
+                return 'Insufficient funds'
+            else:
+                balance -= amount
+                return balance
 
+    return helper
 
 def repeated(t, k):
     """Return the first value in iterator T that appears K times in a row. Iterate through the items such that
@@ -76,7 +109,20 @@ def repeated(t, k):
     """
     assert k > 1
     "*** YOUR CODE HERE ***"
-
+    cnt = 0
+    pre = None
+    for ele in t:
+        if not pre:
+            cnt = 1
+            pre = ele
+            continue
+        if ele == pre:
+            cnt += 1
+        else:
+            cnt = 1
+            pre = ele
+        if cnt == k:
+            return pre
 
 def permutations(seq):
     """Generates all permutations of the given sequence. Each permutation is a
@@ -101,6 +147,13 @@ def permutations(seq):
     [['a', 'b'], ['b', 'a']]
     """
     "*** YOUR CODE HERE ***"
+    seq = list(seq)
+    if len(seq) == 1:
+        yield seq
+
+    for i in range(len(seq)):
+        for res in permutations(seq[:i] + seq[i + 1 :]):
+            yield [seq[i]] + res
 
 
 def make_joint(withdraw, old_pass, new_pass):
@@ -142,6 +195,15 @@ def make_joint(withdraw, old_pass, new_pass):
     "Frozen account. Attempts: ['my', 'secret', 'password']"
     """
     "*** YOUR CODE HERE ***"
+    attempt = withdraw(0, old_pass)
+    if type(attempt) == str:
+        return attempt
+    else:
+        def helper(amount, pwd):
+            if pwd == new_pass:
+                pwd = old_pass
+            return withdraw(amount, pwd)
+    return helper
 
 
 def remainders_generator(m):
@@ -176,6 +238,13 @@ def remainders_generator(m):
     11
     """
     "*** YOUR CODE HERE ***"
+    def remainder(n):
+        for i in naturals():
+            if i % m == n:
+                yield i
+
+    for i in range(m):
+        yield remainder(i)
 
 
 def naturals():
