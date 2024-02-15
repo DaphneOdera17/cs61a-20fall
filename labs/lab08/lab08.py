@@ -116,6 +116,14 @@ def reverse_other(t):
     Tree(1, [Tree(8, [Tree(3, [Tree(5), Tree(4)]), Tree(6, [Tree(7)])]), Tree(2)])
     """
     "*** YOUR CODE HERE ***"
+    if t.is_leaf():
+        return
+    labels_of_branches = [b.label for b in t.branches] # [2, 6, 8]
+    reverse_labels = reversed(labels_of_branches) # [8, 6, 2]
+    for b, new_label in zip(t.branches, reverse_labels):
+        b.label = new_label
+        for grandchildren in b.branches:
+            reverse_other(grandchildren)
 
 class Link:
     """A linked list.
