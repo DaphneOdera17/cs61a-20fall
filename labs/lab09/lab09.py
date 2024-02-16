@@ -77,8 +77,11 @@ def num_trees(n):
     if n == 1 or n == 2:
         return 1
     ans = 0
-    for i in range(1, n):
-        ans += num_trees(i) * num_trees(n - i)
+    for how_many_on_left in range(1, n):
+        how_many_on_right = n - how_many_on_left
+        num_trees_on_left = num_trees(how_many_on_left)
+        num_trees_on_right = num_trees(how_many_on_right)
+        ans += num_trees_on_right * num_trees_on_left
     return ans
 
 
@@ -117,15 +120,15 @@ def make_generators_generator(g):
     9
     """
     def gen(i):
-        for ___________ in ___________:
-            if _________________________:
-                _________________________
-            _______________________
-            _______________________
-    __________________________
-    for _________ in __________________:
-        ______________________________
-        ______________________________
+        for item in g():
+            if i <= 0:
+                return
+            yield item
+            i -= 1
+    i = 1
+    for _ in g():
+        yield g(i)
+        i += 1
 
 
 class Button:
@@ -164,26 +167,27 @@ class Keyboard:
     """
 
     def __init__(self, *args):
-        ________________
-        for _________ in ________________:
-            ________________
+        self.buttons = {}
+        for i in range(len(args)):
+            self.buttons[args[i].pos] = args[i]
+            self.buttons[args[i].pos].times_pressed = 0
 
     def press(self, info):
         """Takes in a position of the button pressed, and
         returns that button's output"""
-        if ____________________:
-            ________________
-            ________________
-            ________________
-        ________________
+        if info in self.buttons.keys():
+            self.buttons[info].times_pressed += 1
+            return self.buttons[info].key
+        return ''
 
     def typing(self, typing_input):
         """Takes in a list of positions of buttons pressed, and
         returns the total output"""
-        ________________
-        for ________ in ____________________:
-            ________________
-        ________________
+        s = ''
+        for info in typing_input:
+            s += self.buttons[info].key
+            self.buttons[info].times_pressed += 1
+        return s
 
 
 def make_advanced_counter_maker():
@@ -215,15 +219,26 @@ def make_advanced_counter_maker():
     >>> tom_counter('global-count')
     1
     """
-    ________________
-    def ____________(__________):
-        ________________
-        def ____________(__________):
-            ________________
+    global_count = 0
+    def helper():
+        count = 0
+        def helper_(s):
+            nonlocal global_count
+            nonlocal count
+            if s == 'count':
+                count += 1
+                return count
+            elif s == 'global-count':
+                global_count += 1
+                return global_count
+            elif s == 'global-reset':
+                global_count = 0
+            elif s == 'reset':
+                count = 0
             "*** YOUR CODE HERE ***"
             # as many lines as you want
-        ________________
-    ________________
+        return helper_
+    return helper
 
 
 def trade(first, second):
@@ -255,9 +270,9 @@ def trade(first, second):
     """
     m, n = 1, 1
 
-    equal_prefix = lambda: ______________________
-    while _______________________________:
-        if __________________:
+    equal_prefix = lambda: sum(first[:m]) == sum(second[:n])
+    while m <= len(first) and n <= len(second) and not equal_prefix():
+        if sum(first[:m]) < sum(second[:n]):
             m += 1
         else:
             n += 1
@@ -294,11 +309,11 @@ def shuffle(cards):
     ['A♡', 'A♢', 'A♤', 'A♧', '2♡', '2♢', '2♤', '2♧', '3♡', '3♢', '3♤', '3♧']
     """
     assert len(cards) % 2 == 0, 'len(cards) must be even'
-    half = _______________
+    half = len(cards) // 2
     shuffled = []
-    for i in _____________:
-        _________________
-        _________________
+    for i in range(half):
+        shuffled.append(cards[i])
+        shuffled.append(cards[i + half])
     return shuffled
 
 
@@ -317,14 +332,14 @@ def insert(link, value, index):
     >>> insert(link, 4, 5)
     IndexError
     """
-    if ____________________:
-        ____________________
-        ____________________
-        ____________________
-    elif ____________________:
-        ____________________
+    if link.rest is Link.empty and index > 0:
+        raise IndexError
+    elif index == 0:
+        rest = Link(link.first, link.rest)
+        link.first = value
+        link.rest = rest
     else:
-        ____________________
+        insert(link.rest, value, index - 1)
 
 
 
@@ -342,13 +357,15 @@ def deep_len(lnk):
     >>> deep_len(levels)
     5
     """
-    if ______________:
+    if lnk == Link.empty:
         return 0
-    elif ______________:
+    elif lnk.rest == Link.empty and not isinstance(lnk.first, Link):
         return 1
     else:
-        return _________________________
-
+        if isinstance(lnk.first, Link):
+            return deep_len(lnk.first) + deep_len(lnk.rest)
+        else:
+            return 1 + deep_len(lnk.rest)
 
 def make_to_string(front, mid, back, empty_repr):
     """ Returns a function that turns linked lists to strings.
@@ -366,10 +383,10 @@ def make_to_string(front, mid, back, empty_repr):
     '()'
     """
     def printer(lnk):
-        if ______________:
-            return _________________________
+        if lnk is Link.empty:
+            return empty_repr
         else:
-            return _________________________
+            return front + str(lnk.first) + mid + printer(lnk.rest) + back
     return printer
 
 
@@ -390,11 +407,11 @@ def prune_small(t, n):
     >>> t3
     Tree(6, [Tree(1), Tree(3, [Tree(1), Tree(2)])])
     """
-    while ___________________________:
-        largest = max(_______________, key=____________________)
-        _________________________
-    for __ in _____________:
-        ___________________
+    while not t.is_leaf() and len(t.branches) > n:
+        largest = max([branch for branch in t.branches], key= lambda x: x.label)
+        t.branches = [branch for branch in t.branches if branch != largest]
+    for b in t.branches:
+        prune_small(b, n)
 
 
 class Link:
