@@ -10,20 +10,16 @@ test = {
           >>> slow = SlowThrower()
           >>> scary = ScaryThrower()
           >>> SlowThrower.food_cost
-          c9452203eb0b0f0bd2454586a6c2fc5c
-          # locked
+          4
           >>> ScaryThrower.food_cost
-          50ae32be3e31df6c59633df7fdfb3a72
-          # locked
+          6
           >>> slow.armor
-          d89cf7c79d5a479b0f636734143ed5e6
-          # locked
+          1
           >>> scary.armor
-          d89cf7c79d5a479b0f636734143ed5e6
-          # locked
+          1
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         },
         {
           'code': r"""
@@ -36,22 +32,19 @@ test = {
           >>> gamestate.time = 1
           >>> bee.action(gamestate)
           >>> bee.place.name # SlowThrower should cause slowness on odd turns
-          040b6ad98a7360eba8d493c250a9b82e
-          # locked
+          'tunnel_0_4'
           >>> gamestate.time += 1
           >>> bee.action(gamestate)
           >>> bee.place.name # SlowThrower should cause slowness on odd turns
-          8344c19df8015306b462119efc8419cb
-          # locked
+          'tunnel_0_3'
           >>> for _ in range(3):
           ...    gamestate.time += 1
           ...    bee.action(gamestate)
           >>> bee.place.name
-          7f44338412808161209e944b1ee0f78c
-          # locked
+          'tunnel_0_1'
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         },
         {
           'code': r"""
