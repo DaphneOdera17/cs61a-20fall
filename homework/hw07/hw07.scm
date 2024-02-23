@@ -1,5 +1,9 @@
 (define (filter-lst fn lst)
   'YOUR-CODE-HERE
+  (cond ((null? lst)nil)
+    ((fn (car lst)) (cons (car lst) (filter-lst fn (cdr lst))))
+    (else (filter-lst fn (cdr lst)))
+    )
 )
 
 ;;; Tests
@@ -11,6 +15,10 @@
 
 (define (interleave first second)
   'YOUR-CODE-HERE
+  (cond ((null? second) first)
+    ((null? first) second)
+    (else (cons (car first) (cons (car second) (interleave (cdr first) (cdr second)))))
+    )
 )
 
 (interleave (list 1 3 5) (list 2 4 6))
@@ -25,10 +33,15 @@
 
 (define (accumulate combiner start n term)
   'YOUR-CODE-HERE
+  (cond ((= n 0) start)
+    (else (combiner (term n) (accumulate combiner start (- n 1) term)))
+    )
 )
 
 
 (define (no-repeats lst)
   'YOUR-CODE-HERE
+  (cond ((null? lst) lst)
+    (else (cons (car lst) (no-repeats (filter-lst (lambda (x) (not (= x (car lst)))) (cdr lst))))))
 )
 
